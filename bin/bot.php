@@ -26,6 +26,12 @@ $socket->on('connection', function (React\Socket\ConnectionInterface $connection
   $connection->on('data', function($chunk) use (&$tgLog, &$config, $addr) {
     $sendMessage = new SendMessage();
     $sendMessage->chat_id = $config['user'];
+    if (strpos($chunk, ">>!URGENT")) {
+      $chunk = str_replace(">>!URGENT", "", $chunk);
+      $sendMessage->disable_notification = false;
+    } else {
+      $sendMessage->disable_notification = true;
+    }
     $sendMessage->text = $chunk . ($config['sourcefooter'] ? "\n\> _from *".$addr."*_" : "");
     $sendMessage->parse_mode = 'MarkdownV2';
     $tgLog->performApiRequest($sendMessage)

@@ -20,6 +20,8 @@ if (strpos($argline, '-d ') !== false) {
     $arg[1] = trim($arg[1], " \"");
     if ($arg[0] === 'title')
       $data = "\> _*".addcslashes($arg[1], "_*[]()~`>#+-=|{}.!\\")."*_\n".$data;
+    elseif ($arg[0] === 'urgent')
+      $data = $data.">>!URGENT";
     else
       $data = $data."\n".addcslashes($arg[1], "_*[]()~`>#+-=|{}.!\\");
   }
