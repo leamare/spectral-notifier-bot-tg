@@ -6,5 +6,8 @@
   "sourcefooter": true,
   "sourcealiases": {
     "127.0.0.1": "localhost"
-  }
+  },
+  "silentkeywords": [
+    "silence"
+  ]
 }

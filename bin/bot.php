@@ -26,7 +26,7 @@ $socket->on('connection', function (React\Socket\ConnectionInterface $connection
   $connection->on('data', function($chunk) use (&$tgLog, &$config, $addr) {
     $sendMessage = new SendMessage();
     $sendMessage->chat_id = $config['user'];
-    if (strpos($chunk, ">>!SILENT")) {
+    if (strpos($chunk, ">>!SILENT") !== false) {
       $chunk = str_replace(">>!SILENT", "", $chunk);
       $sendMessage->disable_notification = true;
     }

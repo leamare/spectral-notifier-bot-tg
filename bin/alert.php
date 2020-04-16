@@ -29,6 +29,13 @@ if (strpos($argline, '-d ') !== false) {
   $data = $argline;
 }
 
+foreach ($config['silentkeywords'] as $kv) {
+  if (strpos($data, $kv) !== false) {
+    $data .= " >>!SILENT";
+    break;
+  }
+}
+
 $loop = React\EventLoop\Factory::create();
 $connector = new React\Socket\Connector($loop);
 
