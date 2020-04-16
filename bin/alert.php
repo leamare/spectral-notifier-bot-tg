@@ -21,7 +21,7 @@ if (strpos($argline, '-d ') !== false) {
     if ($arg[0] === 'title')
       $data = "\> _*".addcslashes($arg[1], "_*[]()~`>#+-=|{}.!\\")."*_\n".$data;
     elseif ($arg[0] === 'urgent')
-      $data = $data.">>!URGENT";
+      $data = $data.">>!SILENT";
     else
       $data = $data."\n".addcslashes($arg[1], "_*[]()~`>#+-=|{}.!\\");
   }
