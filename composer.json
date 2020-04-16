@@ -1,0 +1,13 @@
+{
+    "name": "leamare/spectral-notifier-bot-tg",
+    "type": "project",
+    "require": {
+        "unreal4u/telegram-api": "^3.5"
+    },
+    "authors": [
+        {
+            "name": "Eli Silakov",
+            "email": "me@ileamare.ru"
+        }
+    ]
+}
