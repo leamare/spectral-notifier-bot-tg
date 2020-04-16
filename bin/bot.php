@@ -19,10 +19,14 @@ $tgLog = new TgLog($config['token'], $handler);
 $socket = new React\Socket\Server($config['port'], $loop);
 
 $socket->on('connection', function (React\Socket\ConnectionInterface $connection) use (&$tgLog, &$config) {
-  $connection->on('data', function($chunk) use (&$tgLog, &$config) {
+  $ip = trim(parse_url($connection->getRemoteAddress(), PHP_URL_HOST), '[]');
+  $addr = $config['sourcealiases'][$ip] ?? $ip;
+  $addr = addcslashes($addr, "_*[]()~`>#+-=|{}.!\\");
+
+  $connection->on('data', function($chunk) use (&$tgLog, &$config, $addr) {
     $sendMessage = new SendMessage();
     $sendMessage->chat_id = $config['user'];
-    $sendMessage->text = $chunk;
+    $sendMessage->text = $chunk . ($config['sourcefooter'] ? "\n\> _from *".$addr."*_" : "");
     $sendMessage->parse_mode = 'MarkdownV2';
     $tgLog->performApiRequest($sendMessage)
       ->then(
