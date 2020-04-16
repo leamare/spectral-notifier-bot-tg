@@ -33,6 +33,10 @@ $connector = new React\Socket\Connector($loop);
 $connector->connect($config['server'])->then(function (React\Socket\ConnectionInterface $connection) use ($data) {
     $connection->write($data."\n");
     $connection->end();
-});
+  },
+  function (Exception $exception) {
+    echo 'Exception ' . get_class($exception) . ' caught, message: ' . $exception->getMessage()."\n";
+  }
+);
 
 $loop->run();
