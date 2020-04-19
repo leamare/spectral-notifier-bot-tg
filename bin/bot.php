@@ -89,7 +89,7 @@ if (!empty($config['commands'])) {
               } elseif ($cmd[0] === 'uri') {
                 $res = file_get_contents($cmd[1]);
               }
-              $res = addcslashes($aresddr, "_*[]()~`>#+-=|{}.!\\");
+              $res = addcslashes($res, "_*[]()~`>#+-=|{}.!\\");
               sendNewMessage($tgLog, $res, $from);
             }
           }
