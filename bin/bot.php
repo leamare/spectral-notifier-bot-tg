@@ -86,11 +86,13 @@ if (!empty($config['commands'])) {
               $cmd = explode('::',$config['commands'][ $msg ]);
               if ($cmd[0] === 'shell') {
                 $res = shell_exec($cmd[1]);
+                $res = "```\n".addcslashes($res, "_*[]()~`>#+-=|{}.!\\")."\n```";
+                $html = false;
               } elseif ($cmd[0] === 'uri') {
+                $html = true;
                 $res = file_get_contents($cmd[1]);
               }
-              $res = addcslashes($res, "_*[]()~`>#+-=|{}.!\\");
-              sendNewMessage($tgLog, $res, $from);
+              sendNewMessage($tgLog, $res, $from, false, $html);
             }
           }
           if ($firstRun) {
