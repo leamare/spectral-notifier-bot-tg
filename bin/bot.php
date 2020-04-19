@@ -91,6 +91,7 @@ if (!empty($config['commands'])) {
               } elseif ($cmd[0] === 'uri') {
                 $html = true;
                 $res = file_get_contents($cmd[1]);
+                $res = str_replace('<br />', "\n", $res);
               }
               sendNewMessage($tgLog, $res, $from, false, $html);
             }
