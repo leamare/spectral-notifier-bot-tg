@@ -26,21 +26,40 @@ $tgLog = new TgLog($config['token'], $handler);
 
 $socket = new React\Socket\Server($config['port'], $loop);
 
+foreach ($config['users'] as $u => $st) {
+  sendNewMessage($tgLog, "Up and running", $u, true);
+}
+
 $socket->on('connection', function (React\Socket\ConnectionInterface $connection) use (&$tgLog, &$config) {
   $ip = trim(parse_url($connection->getRemoteAddress(), PHP_URL_HOST), '[]');
   $addr = $config['sourcealiases'][$ip] ?? $ip;
   $addr = addcslashes($addr, "_*[]()~`>#+-=|{}.!\\");
 
   $connection->on('data', function($chunk) use (&$tgLog, &$config, $addr) {
-    $silent = false;
-    if (strpos($chunk, ">>!SILENT") !== false) {
-      $chunk = str_replace(">>!SILENT", "", $chunk);
-      $silent = true;
+    $silent = true;
+    $groups = [];
+
+    foreach($config['groups'] as $gr => $des) {
+      if (strpos($chunk, $des['kv']) !== false) {
+        $groups[] = $gr;
+        if (!$des['silent'] && $silent) $silent = false;
+      }
     }
-    $chunk .= ($config['sourcefooter'] ? "\n\> _from *".$addr."*_" : "");
+    if (empty($groups)) $groups[] = '_else';
+    $groups[] = '_all';
+
+    if ($config['sourcefooter'])
+      $chunk .= "\n\> _from *".$addr."*_";
     foreach ($config['users'] as $u => $st) {
-      if ($silent && !$st) continue;
-      sendNewMessage($tgLog, $chunk, $u, $silent);
+      $send = false;
+      foreach ($st as $gr) {
+        if (in_array($gr, $groups)) {
+          $send = true;
+          break;
+        }
+      }
+      if ($send)
+        sendNewMessage($tgLog, $chunk, $u, $silent);
     }
   });
 
@@ -62,49 +81,72 @@ $socket->on('connection', function (React\Socket\ConnectionInterface $connection
 });
 
 if (!empty($config['commands'])) {
-  $timer = $loop->addPeriodicTimer($config['polling_timer'] ?? 5, function () use (&$tgLog, &$config, &$firstRun, &$lastPoll) {
-    $updates = new GetUpdates();
-    $updates->allowed_updates[] = 'message';
-    $tgLog->performApiRequest($updates)
-      ->then(
-        function (UpdatesArray $upd) use ($tgLog, &$config, &$firstRun, &$lastPoll) {
-          foreach ($upd->data as $u) {
-            if ($firstRun) {
-              $lastPoll = $u->update_id;
-              continue;
-            } else {
-              if ($lastPoll >= $u->update_id)
+  if ($config['polling']) {
+    $timer = $loop->addPeriodicTimer($config['polling_timer'] ?? 5, function () use (&$tgLog, &$config, &$firstRun, &$lastPoll) {
+      $updates = new GetUpdates();
+      $updates->allowed_updates[] = 'message';
+      $updates->limit = $config['polling_limit'] ?? 100;
+      $updates->offset = -$updates->limit;
+      $tgLog->performApiRequest($updates)
+        ->then(
+          function (UpdatesArray $upd) use ($tgLog, &$config, &$firstRun, &$lastPoll) {
+            $br = $config['argsbr'] ?? '  ';
+            foreach ($upd->data as $u) {
+              if ($firstRun) {
+                $lastPoll = $u->update_id;
                 continue;
-            }
-            $msg = trim(strtolower($u->message->text));
-            $from = $u->message->from->id;
-            if (!isset($config['users'][$from]))
-              continue;
-            
-            $lastPoll = $u->update_id;
-            if (isset($config['commands'][ $msg ])) {
-              $cmd = explode('::',$config['commands'][ $msg ]);
-              if ($cmd[0] === 'shell') {
-                $res = shell_exec($cmd[1]);
-                $res = "```\n".addcslashes($res, "_*[]()~`>#+-=|{}.!\\")."\n```";
-                $html = false;
-              } elseif ($cmd[0] === 'uri') {
-                $html = true;
-                $res = file_get_contents($cmd[1]);
-                $res = str_replace('<br />', "\n", $res);
+              } else {
+                if ($lastPoll >= $u->update_id)
+                  continue;
               }
-              sendNewMessage($tgLog, $res, $from, false, $html);
+
+              $msg = trim(strtolower($u->message->text));
+
+              $msg = explode($br, $msg);
+
+              $from = $u->message->from->id;
+              if (!isset($config['users'][$from]))
+                continue;
+              
+              $lastPoll = $u->update_id;
+              if (isset($config['commands'][ $msg[0] ])) {
+                $cmd = explode('::', $config['commands'][ $msg[0] ]);
+                if ($cmd[0] === 'shell') {
+                  if (isset($cmd[2])) {
+                    for ($i = (int)$cmd[2]; $i > 0; $i--) {
+                      if (isset($msg[$i])) {
+                        $cmd[1] = str_replace('%'.$i, addcslashes($msg[$i], '&|'), $cmd[1]);
+                      }
+                    }
+                  }
+                  $res = shell_exec($cmd[1]);
+                  $res = "```\n".addcslashes($res, "_*[]()~`>#+-=|{}.!\\")."\n```";
+                  $html = false;
+                } elseif ($cmd[0] === 'uri') {
+                  if (isset($cmd[2])) {
+                    for ($i = (int)$cmd[2]; $i > 0; $i--) {
+                      if (isset($msg[$i])) {
+                        $cmd[1] = str_replace('%'.$i, $msg[$i], $cmd[1]);
+                      }
+                    }
+                  }
+                  $html = true;
+                  $res = file_get_contents($cmd[1]);
+                  $res = str_replace('<br />', "\n", $res);
+                }
+                sendNewMessage($tgLog, $res, $from, false, $html);
+              }
             }
+            if ($firstRun) {
+              $firstRun = false;
+            }
+          }, 
+          function (\Exception $exception) {
+            echo 'Exception ' . get_class($exception) . ' caught, message: ' . $exception->getMessage()."\n";
           }
-          if ($firstRun) {
-            $firstRun = false;
-          }
-        }, 
-        function (\Exception $exception) {
-          echo 'Exception ' . get_class($exception) . ' caught, message: ' . $exception->getMessage()."\n";
-        }
-      );
-  });
+        );
+    });
+  }
 }
 
 $loop->run();
