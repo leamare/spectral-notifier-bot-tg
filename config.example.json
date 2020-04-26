@@ -3,18 +3,38 @@
   "port": "123.12.12.1:7721",
   "server": "127.0.0.1:7721",
   "sourcefooter": true,
+  "polling": false,
   "polling_timer": 5,
+  "polling_limit": 10,
+  "webhook_url": "https://the.best.web.server/bot/?token=%token%",
+  "webhook_port": 17733,
   "users": {
-    "123456": true
+    "1234": [ "intruder", "errors", "dumpform", "_else" ],
+    "-1234": [ "_all" ]
   },
   "sourcealiases": {
     "127.0.0.1": "localhost"
   },
-  "silentkeywords": [
-    "silence"
-  ],
+  "groups": {
+    "errors": {
+      "kv": "Error",
+      "silent": false
+    },
+    "intruder": {
+      "kv": "Intruder",
+      "silent": false
+    },
+    "dumpform": {
+      "kv": "DUMPFORM",
+      "silent": true
+    }
+  },
   "commands": {
     "ping": "shell::echo pong",
-    "uri": "uri::https://google.com"
-  }
+    "uri": "uri::https://google.com",
+    "ls": "shell::ls %1 -n::1",
+    "cat": "shell::cat %1::1",
+    "tail": "shell::tail %1 -n %2::2"
+  },
+  "argsbr": " -- "
 }

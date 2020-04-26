@@ -1,3 +1,5 @@
 vendor/
 config.json
 nohup.out
+errors.out
+errlog.out
