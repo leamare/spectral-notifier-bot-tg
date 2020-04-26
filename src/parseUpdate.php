@@ -9,12 +9,12 @@ function parseUpdate(&$u, &$tgLog, &$config) {
   $from = $u->message->from->id;
   if (!isset($config['users'][$from]))
     return;
+
+  $c = strtolower($msg[0]);
   
-  $lastPoll = $u->update_id;
-  if (isset($config['commands'][ $msg[0] ])) {
-    $cmd = explode('::', $config['commands'][ $msg[0] ]);
-    $c = strtolower($cmd[0]);
-    if ($c === 'shell') {
+  if (isset($config['commands'][ $c ])) {
+    $cmd = explode('::', $config['commands'][ $c ]);
+    if ($cmd[0] === 'shell') {
       if (isset($cmd[2])) {
         for ($i = (int)$cmd[2]; $i > 0; $i--) {
           if (isset($msg[$i])) {
@@ -25,7 +25,7 @@ function parseUpdate(&$u, &$tgLog, &$config) {
       $res = shell_exec($cmd[1]);
       $res = "```\n".addcslashes($res, "_*[]()~`>#+-=|{}.!\\")."\n```";
       $html = false;
-    } elseif ($c === 'uri') {
+    } elseif ($cmd[0] === 'uri') {
       if (isset($cmd[2])) {
         for ($i = (int)$cmd[2]; $i > 0; $i--) {
           if (isset($msg[$i])) {

@@ -42,6 +42,7 @@ if (!empty($config['commands'])) {
               }
 
               parseUpdate($u, $tgLog, $config);
+              $lastPoll = $u->update_id;
             }
             if ($firstRun) {
               $firstRun = false;
