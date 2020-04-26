@@ -8,6 +8,7 @@ use \unreal4u\TelegramAPI\Telegram\Types\Custom\UpdatesArray;
 use \unreal4u\TelegramAPI\Telegram\Methods\SendMessage;
 use \unreal4u\TelegramAPI\Telegram\Methods\SetWebhook;
 use \unreal4u\TelegramAPI\Telegram\Methods\GetUpdates;
+use \unreal4u\TelegramAPI\Telegram\Methods\DeleteWebhook;
 
 use Psr\Http\Message\ServerRequestInterface;
 use React\Http\Response;
@@ -17,6 +18,8 @@ use React\Http\Server;
 include_once __DIR__ . '/parseUpdate.php';
 
 if (!empty($config['commands'])) {
+  $tgLog->performApiRequest(new DeleteWebhook());
+
   if ($config['polling']) {
     $firstRun = true;
     $lastPoll = 0;

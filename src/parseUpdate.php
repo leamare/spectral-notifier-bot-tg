@@ -2,7 +2,7 @@
 
 function parseUpdate(&$u, &$tgLog, &$config) {
   $br = $config['argsbr'] ?? '  ';
-  $msg = trim(strtolower($u->message->text));
+  $msg = trim($u->message->text);
 
   $msg = explode($br, $msg);
 
@@ -13,7 +13,8 @@ function parseUpdate(&$u, &$tgLog, &$config) {
   $lastPoll = $u->update_id;
   if (isset($config['commands'][ $msg[0] ])) {
     $cmd = explode('::', $config['commands'][ $msg[0] ]);
-    if ($cmd[0] === 'shell') {
+    $c = strtolower($cmd[0]);
+    if ($c === 'shell') {
       if (isset($cmd[2])) {
         for ($i = (int)$cmd[2]; $i > 0; $i--) {
           if (isset($msg[$i])) {
@@ -24,7 +25,7 @@ function parseUpdate(&$u, &$tgLog, &$config) {
       $res = shell_exec($cmd[1]);
       $res = "```\n".addcslashes($res, "_*[]()~`>#+-=|{}.!\\")."\n```";
       $html = false;
-    } elseif ($cmd[0] === 'uri') {
+    } elseif ($c === 'uri') {
       if (isset($cmd[2])) {
         for ($i = (int)$cmd[2]; $i > 0; $i--) {
           if (isset($msg[$i])) {
