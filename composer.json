@@ -2,7 +2,8 @@
     "name": "leamare/spectral-notifier-bot-tg",
     "type": "project",
     "require": {
-        "unreal4u/telegram-api": "^3.5"
+        "unreal4u/telegram-api": "^3.5",
+        "react/http": "^0.8.6"
     },
     "authors": [
         {
