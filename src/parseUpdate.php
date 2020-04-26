@@ -1,6 +1,7 @@
 <?php 
 
 function parseUpdate(&$u, &$tgLog, &$config) {
+  $br = $config['argsbr'] ?? '  ';
   $msg = trim(strtolower($u->message->text));
 
   $msg = explode($br, $msg);

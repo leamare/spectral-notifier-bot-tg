@@ -29,7 +29,6 @@ if (!empty($config['commands'])) {
       $tgLog->performApiRequest($updates)
         ->then(
           function (UpdatesArray $upd) use ($tgLog, &$config, &$firstRun, &$lastPoll) {
-            $br = $config['argsbr'] ?? '  ';
             foreach ($upd->data as $u) {
               if ($firstRun) {
                 $lastPoll = $u->update_id;
