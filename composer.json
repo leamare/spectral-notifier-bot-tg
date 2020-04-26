@@ -1,10 +1,13 @@
 {
     "name": "leamare/spectral-notifier-bot-tg",
+    "version": "1.0.0",
+    "homepage": "https://github.com/leamare/spectral-notifier-bot-tg/",
     "type": "project",
     "require": {
         "unreal4u/telegram-api": "^3.5",
         "react/http": "^0.8.6"
     },
+    "license": "GPL-3.0-only",
     "authors": [
         {
             "name": "Eli Silakov",

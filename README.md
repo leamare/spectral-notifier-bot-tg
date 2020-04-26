@@ -6,6 +6,8 @@ It receives socket messages and sends it as a telegram message
 
 It supports sending notifications to groups and channels, as well as users (but currently only reads from users)
 
+It's built using unreal4u/telegram-api lib
+
 ## Usage
 
 Usage:
@@ -68,3 +70,7 @@ Below is the list of supported config parameters (and required ones) + instructi
   * To use arguments, you need to use pairs or '%'+number (like `%1`) in the command
   * Supported command types: `uri` (gets URL contents) and `shell` (executes a shell command)
   * URL should be relatively simple, otherwise telegram will reject your message (I use it for a coupmr of simple pages and to send status requests)
+
+## Autoloading, PSR, tests and so on
+
+There's no need to.
