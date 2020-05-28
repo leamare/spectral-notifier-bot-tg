@@ -16,7 +16,7 @@ if (strpos($argline, '-d ') !== false) {
 
   foreach ($args as $a) {
     if (empty($a)) continue;
-    $arg = explode('=', $a);
+    $arg = explode('=', $a, 2);
     $arg[1] = trim($arg[1], " \"");
     if ($arg[0] === 'title')
       $data = "\> _*".addcslashes($arg[1], "_*[]()~`>#+-=|{}.!\\")."*_\n".$data;

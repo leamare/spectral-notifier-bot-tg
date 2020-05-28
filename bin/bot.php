@@ -37,7 +37,7 @@ $socket->on('connection', function (React\Socket\ConnectionInterface $connection
     $groups = [];
 
     foreach($config['groups'] as $gr => $des) {
-      if (strpos($chunk, $des['kv']) !== false) {
+      if (stripos($chunk, $des['kv']) !== false) {
         $groups[] = $gr;
         if (!$des['silent'] && $silent) $silent = false;
       }
