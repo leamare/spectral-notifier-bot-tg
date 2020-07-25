@@ -12,7 +12,10 @@ function parseUpdate(&$u, &$tgLog, &$config) {
 
   $c = strtolower($msg[0]);
   
-  if (isset($config['commands'][ $c ])) {
+  if ($c == "/h") {
+    $res = "Commands:\n```".implode(', ', array_keys($config['commands']))."\n```";
+    sendNewMessage($tgLog, $res, $from, false, false);
+  } else if (isset($config['commands'][ $c ])) {
     $cmd = explode('::', $config['commands'][ $c ]);
     if ($cmd[0] === 'shell') {
       if (isset($cmd[2])) {
