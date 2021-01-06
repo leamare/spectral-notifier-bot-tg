@@ -9,7 +9,7 @@ use \unreal4u\TelegramAPI\Telegram\Methods\SendMessage;
 function sendNewMessage(TgLog &$tl, string $body, $recepient, $silent = false, $html = false) {
   $sendMessage = new SendMessage();
   $sendMessage->chat_id = $recepient;
-  $sendMessage->text = $body;
+  $sendMessage->text = addcslashes($body, '-');
   $sendMessage->disable_notification = $silent;
   $sendMessage->parse_mode = $html ? 'HTML' : 'MarkdownV2';
   $tl->performApiRequest($sendMessage)
