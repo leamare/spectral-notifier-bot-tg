@@ -35,7 +35,7 @@ function setReminder(array $msg, &$config, TgLog $tl, $from) {
     if ($timer <= 0) $timer = 3600;
   } else $timer = 3600;
 
-  sendNewMessage($tl, "Set reminder to ".date(DATE_RFC850, time()+$timer), $from, false, $html);
+  sendNewMessage($tl, "Set reminder to ".date(DATE_RFC850, time()+$timer), $from, true, $html);
   $loop->addTimer($timer, function() use ($remind, $tl, $from) {
     sendNewMessage($tl, $remind[0], $from, false, false);
   });

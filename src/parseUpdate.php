@@ -13,10 +13,12 @@ function parseUpdate(&$u, &$tgLog, &$config) {
   $c = strtolower($msg[0]);
   
   if ($c == "/h") {
-    $res = "Commands:\n```".implode(', ', array_keys($config['commands']))."\n```";
+    $res = "Commands:\n```".implode(', ', array_keys($config['commands']))."\n\n/h /re /time\n\nBreaker: [$br]```";
     sendNewMessage($tgLog, $res, $from, false, false);
   } else if ($c == '/re') {
     setReminder(array_slice($msg, 1), $config, $tgLog, $from);
+  } else if ($c == '/time') {
+    sendNewMessage($tgLog, date(DATE_RFC850, time()), $from, false, $html);
   } else if (isset($config['commands'][ $c ])) {
     $cmd = explode('::', $config['commands'][ $c ]);
     if ($cmd[0] === 'shell') {
