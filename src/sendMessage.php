@@ -9,7 +9,7 @@ use \unreal4u\TelegramAPI\Telegram\Methods\SendMessage;
 function sendNewMessage(TgLog &$tl, string $body, $recepient, $silent = false, $html = false) {
   $sendMessage = new SendMessage();
   $sendMessage->chat_id = $recepient;
-  $sendMessage->text = addcslashes($body, '-');
+  $sendMessage->text = $body;//addcslashes($body, '-');
   $sendMessage->disable_notification = $silent;
   $sendMessage->parse_mode = $html ? 'HTML' : 'MarkdownV2';
   $tl->performApiRequest($sendMessage)
@@ -35,7 +35,7 @@ function setReminder(array $msg, &$config, TgLog $tl, $from) {
     if ($timer <= 0) $timer = 3600;
   } else $timer = 3600;
 
-  sendNewMessage($tl, "Set reminder to ".date(DATE_RFC850, time()+$timer), $from, true, $html);
+  sendNewMessage($tl, addcslashes("Set reminder to ".date(DATE_RFC850, time()+$timer), "_*[]()~`>#+-=|{}.!\\"), $from, true, $html);
   $loop->addTimer($timer, function() use ($remind, $tl, $from) {
     sendNewMessage($tl, $remind[0], $from, false, false);
   });
