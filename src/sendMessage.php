@@ -23,7 +23,7 @@ function sendNewMessage(TgLog &$tl, string $body, $recepient, $silent = false, $
     );
 }
 
-function setReminder(array $msg, &$config, TgLog &$tl, $recepient) {
+function setReminder(array $msg, &$config, TgLog $tl, $from) {
   global $loop;
 
   $br = $config['argsbr'] ?? '  ';
@@ -35,7 +35,8 @@ function setReminder(array $msg, &$config, TgLog &$tl, $recepient) {
     if ($timer <= 0) $timer = 3600;
   } else $timer = 3600;
 
-  $loop->addTimer($timer, function() use ($remind) {
-    sendNewMessage($tl, $remind[0], $recepient, false, false);
+  sendNewMessage($tgLog, "Set reminder to ".date(DATE_RFC850, $timer), $from, false, $html);
+  $loop->addTimer($timer, function() use ($remind, $tl, $from) {
+    sendNewMessage($tl, $remind[0], $from, false, false);
   });
 }
