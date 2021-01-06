@@ -18,6 +18,11 @@ Usage:
   * You can use curl-like parameters, as well as special parameters "body" and "title"
   * Or you can just write everything as a single line
 
+Default commands:
+* `/h` - list of commands
+* `/re -- Message @@ at time` - reminder (-- is the default args breaker)
+* `/time` - current server time
+
 ## Additional setup and config explanation
 
 Below is the list of supported config parameters (and required ones) + instructions to set up a webhook
