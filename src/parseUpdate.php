@@ -15,6 +15,8 @@ function parseUpdate(&$u, &$tgLog, &$config) {
   if ($c == "/h") {
     $res = "Commands:\n```".implode(', ', array_keys($config['commands']))."\n```";
     sendNewMessage($tgLog, $res, $from, false, false);
+  } else if ($c == '/re') {
+    setReminder(array_slice($msg, 1), $config, $tgLog, $from);
   } else if (isset($config['commands'][ $c ])) {
     $cmd = explode('::', $config['commands'][ $c ]);
     if ($cmd[0] === 'shell') {

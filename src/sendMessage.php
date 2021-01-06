@@ -22,3 +22,20 @@ function sendNewMessage(TgLog &$tl, string $body, $recepient, $silent = false, $
       }
     );
 }
+
+function setReminder(array $msg, &$config, TgLog &$tl, $recepient) {
+  global $loop;
+
+  $br = $config['argsbr'] ?? '  ';
+  $msg = implode($br, $msg);
+  $remind = explode('@@', $msg);
+
+  if (isset($remind[1])) {
+    $timer = strtotime($remind[1])-time();
+    if ($timer <= 0) $timer = 3600;
+  } else $timer = 3600;
+
+  $loop->addTimer($timer, function() use ($remind) {
+    sendNewMessage($tl, $remind[0], $recepient, false, false);
+  });
+}
