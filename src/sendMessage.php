@@ -37,6 +37,6 @@ function setReminder(array $msg, &$config, TgLog $tl, $from) {
 
   sendNewMessage($tl, addcslashes("Set reminder to ".date(DATE_RFC850, time()+$timer), "_*[]()~`>#+-=|{}.!\\"), $from, true, false);
   $loop->addTimer($timer, function() use ($remind, $tl, $from) {
-    sendNewMessage($tl, $remind[0], $from, false, false);
+    sendNewMessage($tl, addcslashes($remind[0], "_*[]()~`>#+-=|{}.!\\"), $from, false, false);
   });
 }

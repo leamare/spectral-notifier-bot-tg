@@ -18,7 +18,7 @@ function parseUpdate(&$u, &$tgLog, &$config) {
   } else if ($c == '/re') {
     setReminder(array_slice($msg, 1), $config, $tgLog, $from);
   } else if ($c == '/time') {
-    sendNewMessage($tgLog, date(DATE_RFC850, time()), $from, false, $html);
+    sendNewMessage($tgLog, addcslashes(date(DATE_RFC850, time()), "_*[]()~`>#+-=|{}.!\\"), $from, false, $html);
   } else if (isset($config['commands'][ $c ])) {
     $cmd = explode('::', $config['commands'][ $c ]);
     if ($cmd[0] === 'shell') {
