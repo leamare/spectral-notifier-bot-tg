@@ -5,7 +5,7 @@
     "type": "project",
     "require": {
         "unreal4u/telegram-api": "^3.5",
-        "react/http": "^0.8.6"
+        "react/http": "^1.9.0"
     },
     "license": "GPL-3.0-only",
     "authors": [
